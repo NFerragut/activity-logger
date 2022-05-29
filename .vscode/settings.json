@@ -1,0 +1,22 @@
+{
+  "LWI.breakpoints": [
+    {
+      "column": 58,
+      "color": "#222222"
+    },
+    {
+      "column": 79,
+      "color": "#005500"
+    },
+    {
+      "column": 99,
+      "color": "#777700"
+    },
+    {
+      "column": 99,
+      "color": "#FF0000"
+    }
+  ],
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true
+}
