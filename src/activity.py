@@ -40,7 +40,7 @@ class Activity():
         self._ms_at_last_activity = self._get_last_event_time()
         milliseconds = self._get_millisecond_uptime()
         ms_since_input = milliseconds - self._ms_at_last_activity
-        return ms_since_input / 1000
+        return (ms_since_input + 500) / 1000
 
     def get_active_window(self) -> dict:
         """Get information about the active window."""
