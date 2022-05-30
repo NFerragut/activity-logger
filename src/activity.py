@@ -59,55 +59,32 @@ class Activity():
     @staticmethod
     def get_active_window_handle() -> int:
         """Get the handle (HWND) of the active Microsoft Windows window."""
-        try:
-            # pylint: disable=c-extension-no-member; Allow calls to win32gui methods
-            hwnd = win32gui.GetForegroundWindow()
-            return hwnd
-        # pylint: disable=broad-except; Guarantee handling of whatever error MS Windows throws
-        except Exception:
-            return INVALID_HANDLE_VALUE
+        # pylint: disable=c-extension-no-member; Allow calls to win32gui methods
+        return win32gui.GetForegroundWindow()
 
     @staticmethod
     def _get_process_id(hwnd) -> int:
-        try:
-            # pylint: disable=c-extension-no-member; Allow calls to win32process methods
-            _, pid = win32process.GetWindowThreadProcessId(hwnd)
-            return pid
-        # pylint: disable=broad-except; Guarantee handling of whatever error MS Windows throws
-        except Exception:
-            return INVALID_PID_VALUE
+        # pylint: disable=c-extension-no-member; Allow calls to win32process methods
+        _, pid = win32process.GetWindowThreadProcessId(hwnd)
+        return pid
 
     @staticmethod
     def _get_window_title(hwnd) -> str:
-        try:
-            # pylint: disable=c-extension-no-member; Allow calls to win32gui methods
-            return win32gui.GetWindowText(hwnd)
-        # pylint: disable=broad-except; Guarantee handling of whatever error MS Windows throws
-        except Exception:
-            return ''
+        # pylint: disable=c-extension-no-member; Allow calls to win32gui methods
+        return win32gui.GetWindowText(hwnd)
 
     def _get_app_path(self, pid) -> str:
         path = ''
-        try:
-            for process in self._wmi.query('SELECT ExecutablePath FROM Win32_Process WHERE '
-                                           f'ProcessId = {pid}'):
-                path = process.ExecutablePath
-                break
-        # pylint: disable=broad-except; Guarantee handling of whatever error MS Windows throws
-        except Exception:
-            pass
+        for process in self._wmi.query('SELECT ExecutablePath FROM Win32_Process WHERE '
+                                        f'ProcessId = {pid}'):
+            path = process.ExecutablePath
         return path
 
     def _get_app_name(self, pid) -> str:
         name = ''
-        try:
-            for process in self._wmi.query('SELECT Name FROM Win32_Process WHERE '
-                                           f'ProcessId = {pid}'):
-                name = process.Name
-                break
-        # pylint: disable=broad-except; Guarantee handling of whatever error MS Windows throws
-        except Exception:
-            pass
+        for process in self._wmi.query('SELECT Name FROM Win32_Process WHERE '
+                                        f'ProcessId = {pid}'):
+            name = process.Name
         return name
 
     @staticmethod
