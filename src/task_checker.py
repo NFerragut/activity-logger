@@ -17,9 +17,11 @@ class TaskChecker():
         self._activity._inactive_seconds = inactive_seconds
         self._activity_start = datetime.now()
         self._change_on_title = tuple(change_on_title)
+        self._hwnd = -1
         self._last_check = self._activity_start
+        self._path = ''
+        self._title = ''
         self._user_was_active = False
-        self._window = None
 
     def check(self) -> str:
         """Run a check for user activity."""
@@ -38,22 +40,23 @@ class TaskChecker():
         return message
 
     def _user_active(self):
-        now = datetime.now()
         task_time = self._last_check - self._activity_start
         if task_time.seconds > 1:
-            window = self._activity.get_active_window()
-            if self._should_log(window):
+            hwnd, path, title = self._activity.get_active_window()
+            if self._should_log(hwnd, path, title):
                 message = self._log(task_time.seconds)
-                self._window = window
-                self._activity_start = now
-        self._last_check = now
+                self._hwnd = hwnd
+                self._path = path
+                self._title = title
+                self._activity_start = self._last_check
+        self._last_check = datetime.now()
         return message
 
-    def _should_log(self, window) -> bool:
-        if self._window['hwnd'] != window['hwnd']:
+    def _should_log(self, hwnd, path, title) -> bool:
+        if self._hwnd != hwnd:
             return True
-        app_name = os.path.basename(window['path']).lower()
-        if app_name in self._change_on_title and self._window['title'] != window['title']:
+        app_name = os.path.basename(path).lower()
+        if app_name in self._change_on_title and self._title != title:
             return True
         return False
 
@@ -64,6 +67,7 @@ class TaskChecker():
         task_seconds = task_time.seconds - seconds_since_input
         if task_seconds > 1:
             message = self._log(task_seconds) + '\n' + message
+        self._last_check = datetime.now()
         self._user_was_active = False
         return message
 
@@ -73,15 +77,15 @@ class TaskChecker():
         inactive = activity_start - self._last_check
         if inactive.seconds > 1:
             message = f'            inactive for {inactive.seconds} seconds\n' + message
-        self._window = self._activity.get_active_window()
+        self._hwnd, self._path, self._title = self._activity.get_active_window()
         self._activity_start = activity_start
-        self._last_check = self._activity_start
+        self._last_check = activity_start
         self._user_was_active = True
         return message
 
     def _log(self, task_seconds) -> str:
         timestamp = self._activity_start.strftime(_DATETIME_FORMAT)
         logging.info('%s\t%1.0f\t%s\t%s\t%s', timestamp, task_seconds,
-                     self._window['title'], self._window['path'], self._window['hwnd'])
-        app_name = os.path.basename(self._window['path'])
-        return f'Logged: {task_seconds:4.0f}s "{self._window["title"]}" ({app_name})'
+                     self._title, self._path, self._hwnd)
+        app_name = os.path.basename(self._path)
+        return f'Logged: {task_seconds:4.0f}s "{self._title}" ({app_name})'

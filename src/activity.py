@@ -46,15 +46,13 @@ class Activity():
         """Get information about the active window."""
         app_title = None
         app_path = None
-        # app_name = None
         hwnd = self.get_active_window_handle()
         if hwnd != INVALID_HANDLE_VALUE:
             app_title = self._get_window_title(hwnd)
             pid = self._get_process_id(hwnd)
             if pid != INVALID_PID_VALUE:
                 app_path = self._get_app_path(pid)
-                # app_name = self._get_app_name(pid)
-        return {'title': app_title, 'path': app_path, 'hwnd': hwnd}
+        return hwnd, app_path, app_title
 
     @staticmethod
     def get_active_window_handle() -> int:
@@ -79,13 +77,6 @@ class Activity():
                                         f'ProcessId = {pid}'):
             path = process.ExecutablePath
         return path
-
-    def _get_app_name(self, pid) -> str:
-        name = ''
-        for process in self._wmi.query('SELECT Name FROM Win32_Process WHERE '
-                                        f'ProcessId = {pid}'):
-            name = process.Name
-        return name
 
     @staticmethod
     def _get_millisecond_uptime() -> int:
