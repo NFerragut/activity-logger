@@ -1,8 +1,6 @@
 """ActivityLogger for logging user activity."""
 
-from datetime import datetime, timedelta
 import json
-import logging
 import msvcrt
 import os
 import sys
@@ -11,23 +9,22 @@ import time
 from task_checker import TaskChecker
 
 _CHANGE_ON_TITLE = 'change_on_title'
-_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 _DEFAULT_CHANGE_ON_TITLE = ['chrome.exe']
 _DEFAULT_INACTIVE_SECONDS = 300
 _DEFAULT_LOG_FOLDER = '.'
 _DEFAULT_SAMPLE_PERIOD = 3
 _INACTIVE_SECONDS = 'inactive_seconds'
 _LOG_FOLDER = 'log_folder'
-_MIN_TASK_TIME = 'min_task_time'
 _SAMPLE_PERIOD = 'sample_period'
 
 
 def main():
     """Run a periodic loop to monitor the machine."""
     config = _read_config()
-    _prepare_logging(config[_LOG_FOLDER])
     checker = TaskChecker(change_on_title=config[_CHANGE_ON_TITLE],
                           inactive_seconds=config[_INACTIVE_SECONDS])
+    start_log_message = checker.prepare_logging(config[_LOG_FOLDER])
+    print(start_log_message)
 
     while True:
         message = checker.check()
@@ -74,23 +71,6 @@ def _read_config():
         with open(configfile, 'w', encoding='utf-8') as fout:
             json.dump(config, fout, indent=2)
     return config
-
-
-def _prepare_logging(folder):
-    os.makedirs(folder, exist_ok=True)
-    username = os.getlogin()
-    startofweek = _get_first_day_of_the_week()
-    filename = os.path.join(folder, f'{username}-{startofweek}.log')
-    logging.basicConfig(filename=filename, format='%(message)s', level=logging.DEBUG)
-    start_time = datetime.now().strftime(_DATETIME_FORMAT)
-    logging.info('%s\tActive Seconds\tTitle\tPath\tHWND', start_time)
-    print(f'Logging to {filename}')
-
-
-def _get_first_day_of_the_week():
-    now = datetime.now()
-    first_day = now - timedelta(days=now.weekday())
-    return first_day.strftime('%Y-%m-%d')
 
 
 def _dequeue_key():

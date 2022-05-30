@@ -42,7 +42,7 @@ class Activity():
         ms_since_input = milliseconds - self._ms_at_last_activity
         return (ms_since_input + 500) / 1000
 
-    def get_active_window(self) -> dict:
+    def get_active_window(self) -> tuple:
         """Get information about the active window."""
         app_title = None
         app_path = None
