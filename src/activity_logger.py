@@ -58,7 +58,7 @@ def _read_config():
                 isinstance(config_from_file[_INACTIVE_SECONDS], int):
             config[_INACTIVE_SECONDS] = max(config_from_file[_INACTIVE_SECONDS], 60)
         if _CHANGE_ON_TITLE in config_from_file and \
-                isinstance(config_from_file[_CHANGE_ON_TITLE], list | tuple):
+                isinstance(config_from_file[_CHANGE_ON_TITLE], (list, tuple)):
             config[_CHANGE_ON_TITLE] = tuple(config_from_file[_CHANGE_ON_TITLE])
     except json.JSONDecodeError as error:
         with open(configfile, encoding='utf-8') as fin:
