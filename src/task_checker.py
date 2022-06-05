@@ -29,7 +29,7 @@ class TaskChecker():
         """Prepare to log messages to the output file."""
         os.makedirs(folder, exist_ok=True)
         username = os.getlogin()
-        startofweek = self._get_first_day_of_the_week()
+        startofweek = self._get_first_day_of_week()
         filename = os.path.join(folder, f'{username}-{startofweek}.tab')
         logging.basicConfig(filename=filename, format='%(message)s', level=logging.DEBUG)
         start_time = datetime.now().strftime(_DATETIME_FORMAT)
@@ -37,9 +37,9 @@ class TaskChecker():
         return f'Logging to {filename}'
 
     @staticmethod
-    def _get_first_day_of_the_week():
+    def _get_first_day_of_week(weeks_ago=0):
         now = datetime.now()
-        first_day = now - timedelta(days=now.weekday())
+        first_day = now - timedelta(days=now.weekday() + 7 * weeks_ago)
         return first_day.strftime('%Y-%m-%d')
 
     def check(self) -> str:
@@ -97,7 +97,7 @@ class TaskChecker():
         activity_start = datetime.now()
         inactive = activity_start - self._last_check
         if inactive.seconds > 1:
-            self._log(activity_start, inactive.seconds)
+            self._log(self._last_check, inactive.seconds)
             message = f'            inactive for {inactive.seconds} seconds\n{message}'
         self._window = self._activity.get_active_window()
         self._activity_start = activity_start
