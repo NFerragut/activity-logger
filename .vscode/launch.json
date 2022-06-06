@@ -21,7 +21,11 @@
         "debug-in-terminal"
       ],
       "console": "integratedTerminal",
-      "justMyCode": true
+      "justMyCode": true,
+      "args": [
+        "-a",
+        "-w0"
+      ]
     }
   ]
 }
