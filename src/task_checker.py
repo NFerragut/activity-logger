@@ -97,7 +97,7 @@ class TaskChecker():
         activity_start = datetime.now()
         inactive = activity_start - self._last_check
         if inactive.seconds > 1:
-            self._log(activity_start, inactive.seconds)
+            self._log(self._last_check, inactive.seconds)
             message = f'            inactive for {inactive.seconds} seconds\n{message}'
         self._window = self._activity.get_active_window()
         self._activity_start = activity_start
