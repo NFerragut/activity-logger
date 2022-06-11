@@ -52,6 +52,10 @@ class Activity():
             pid = self._get_process_id(hwnd)
             if pid != INVALID_PID_VALUE:
                 app_path = self._get_app_path(pid)
+        if app_title is None:
+            app_title = '-- unknown title --'
+        if app_path is None:
+            app_path = 'unknown executable'
         return hwnd, app_path, app_title
 
     @staticmethod
