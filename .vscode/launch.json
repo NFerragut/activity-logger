@@ -5,12 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Current File",
+      "name": "ActivityLogger evaluate",
       "type": "python",
       "request": "launch",
-      "program": "${file}",
+      "program": "src/activity_logger.py",
       "console": "integratedTerminal",
-      "justMyCode": true
+      "justMyCode": true,
+      "args": [
+        "table"
+      ]
     },
     {
       "name": "Debug activity_logger",
