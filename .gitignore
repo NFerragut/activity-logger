@@ -20,5 +20,4 @@ htmlcov/
 
 # Project-specific ignores
 experiment/
-activity_logger.json
 *.tab

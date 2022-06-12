@@ -2,25 +2,22 @@
 
 from datetime import datetime, timedelta
 
-_DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-
 
 class Record():
     """A record found in the activity log."""
 
-    def __init__(self, line):
-        fields = line.split('\t')
-        fields.extend(['', '', '', ''])
-        self.start = datetime.strptime(fields[0], _DATETIME_FORMAT)
+    def __init__(self, /, start=None, seconds=0, title='', *,
+                 app='', hwnd=-1, action='', textout=''):
+        self.start: datetime = start
         try:
-            self.seconds = int(fields[1])
+            self.seconds: int = int(seconds)
         except ValueError:
             self.seconds = 0
-        self.title = fields[2]
-        self.app = fields[3]
-        self.hwnd = fields[4]
-        self.action = ''
-        self.textout = ''
+        self.title: str = str(title)
+        self.app: str = str(app)
+        self.hwnd: int = hwnd
+        self.action: str = str(action)
+        self.textout: str = str(textout)
 
     @property
     def is_heading(self) -> bool:
