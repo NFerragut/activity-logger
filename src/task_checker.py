@@ -17,6 +17,7 @@ class TaskChecker():
         self._activity = Activity()
         self._activity._inactive_seconds = inactive_seconds
         self._activity_start = datetime.now()
+        change_on_title = [title.lower() for title in change_on_title]
         self._change_on_title = tuple(change_on_title)
         self._last_check = self._activity_start
         self._user_was_active = False
@@ -28,13 +29,18 @@ class TaskChecker():
     def prepare_logging(self, folder) -> str:
         """Prepare to log messages to the output file."""
         os.makedirs(folder, exist_ok=True)
-        username = os.getlogin()
-        startofweek = self._get_first_day_of_the_week()
-        filename = os.path.join(folder, f'{username}-{startofweek}.tab')
+        filename = self.get_log_filename(folder)
         logging.basicConfig(filename=filename, format='%(message)s', level=logging.DEBUG)
         start_time = datetime.now().strftime(_DATETIME_FORMAT)
         logging.info('%s\tActive Seconds\tTitle\tExecutable\tHWND', start_time)
         return f'Logging to {filename}'
+
+    def get_log_filename(self, folder) -> str:
+        """Determine the name of the log output file."""
+        username = os.getlogin()
+        startofweek = self._get_first_day_of_the_week()
+        filename = os.path.join(folder, f'{username}-{startofweek}.tab')
+        return filename
 
     @staticmethod
     def _get_first_day_of_the_week():
@@ -82,38 +88,41 @@ class TaskChecker():
 
     def _user_active_to_inactive(self):
         message = '        active --> inactive'
-        task_time = self._last_check - self._activity_start
+        now = datetime.now()
         seconds_since_input = self._activity.seconds_since_input()
-        task_seconds = task_time.seconds - seconds_since_input
+        activity_stop = now - timedelta(seconds=seconds_since_input)
+        task_seconds = (activity_stop - self._activity_start).total_seconds()
         if task_seconds > 1:
             logmsg = self._log(self._activity_start, task_seconds)
             message = '\n'.join([logmsg, message])
-        self._last_check = datetime.now()
+        self._activity_start = activity_stop
         self._user_was_active = False
         return message
 
     def _user_inactive_to_active(self) -> str:
         message = '        inactive --> active'
-        activity_start = datetime.now()
-        inactive = activity_start - self._last_check
-        if inactive.seconds > 1:
-            self._log(self._last_check, inactive.seconds)
-            message = f'            inactive for {inactive.seconds} seconds\n{message}'
+        inactivity_stop = datetime.now()
+        inactive_seconds = (inactivity_stop - self._activity_start).total_seconds()
+        if inactive_seconds > 1:
+            logmsg = self._log(self._activity_start, inactive_seconds)
+            message = '\n'.join([logmsg, message])
         self._window = self._activity.get_active_window()
-        self._activity_start = activity_start
-        self._last_check = activity_start
+        self._activity_start = inactivity_stop
+        self._last_check = inactivity_stop
         self._user_was_active = True
         return message
 
-    def _log(self, activity_start, task_seconds) -> str:
+    def _log(self, activity_start: datetime, task_seconds) -> str:
         timestamp = activity_start.strftime(_DATETIME_FORMAT)
         if self._user_was_active:
             hwnd, path, title = self._window
             logging.info('%s\t%1.0f\t%s\t%s\t%s', timestamp, task_seconds,
                          title, path, hwnd)
             app_name = os.path.basename(path)
-            message = f'Logged: {task_seconds:4.0f}s "{title}" ({app_name})'
+            if app_name:
+                app_name = f'  ({app_name})'
+            message = f'{timestamp}{task_seconds:7.0f}s  "{title}"{app_name}'
         else:
-            message = 'IDLE'
-            logging.info('%s\t%1.0f\t%s\t\t', timestamp, task_seconds, message)
+            logging.info('%s\t%1.0f\tIDLE\t\t', timestamp, task_seconds)
+            message = f'{timestamp}{task_seconds:7.0f}s  "IDLE"'
         return message
