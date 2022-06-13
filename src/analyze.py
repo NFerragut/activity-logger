@@ -38,7 +38,7 @@ def read_activity_log(filename):
                 fields = line.split('\t')
                 fields.extend(['', '', '', ''])
                 start = datetime.strptime(fields[0], _DATETIME_FORMAT)
-                record = Record(start, fields[1], fields[2], fields[3], fields[4])
+                record = Record(start, fields[1], fields[2], app=fields[3], hwnd=fields[4])
                 records.append(record)
     return records
 
