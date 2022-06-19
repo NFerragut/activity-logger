@@ -2,6 +2,8 @@
 
 from datetime import datetime, timedelta
 import locale
+import msvcrt
+import os
 import re
 import sys
 
@@ -18,14 +20,55 @@ _UNKNOWN_TASK_NAME = 'Unknown Task'
 _WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
 
-def analyze(command: str, filename: str, task_types: dict):
+def analyze(command: str, log_folder: str, task_types: dict):
     """Analyze the user activity data."""
+    filename = get_log_filename(log_folder)
     records = read_activity_log(filename)
     remove_headings(records)
     for record in records:
         identify_record(record, task_types)
     entries = group_records(records)
     report(command, entries)
+
+
+def get_log_filename(log_folder: str):
+    """Show a list of log files and wait for the user to select one."""
+    logfiles: dict = _get_logs(log_folder)
+    filename = _select_log_file(logfiles, how_many=5)
+    return filename
+
+
+def _get_logs(log_folder: str) -> dict:
+    if not os.path.isdir(log_folder):
+        sys.exit(f'Cannot find log files in "{log_folder}" because it is not a directory.')
+    logfiles = {}
+    for _, _, files in os.walk(log_folder):
+        for file in files:
+            if found := re.fullmatch(r'\w+-(\d{4}-\d\d-\d\d).tab', file):
+                logfiles[found[1]] = file
+    return logfiles
+
+
+def _select_log_file(logfiles: dict, how_many) -> str:
+    selected = ''
+    while not selected:
+        if how_many < len(logfiles):
+            show_keys_list = sorted(logfiles.keys())[-how_many:]
+        else:
+            show_keys_list = sorted(logfiles.keys())
+        show_keys_list.reverse()
+        print('Choose a log file:')
+        for number, datestamp in enumerate(show_keys_list, 1):
+            print(f'  {number}: {logfiles[datestamp]}')
+        user_input = msvcrt.getch()
+        try:
+            index = int(user_input) - 1
+            key = show_keys_list[index]
+            selected = logfiles[key]
+        except ValueError:
+            sys.exit(2)
+    print(f'\nShowing results for {selected}\n')
+    return selected
 
 
 def read_activity_log(filename):
@@ -139,6 +182,8 @@ def report(command: str, entries: list[TimeEntry]):
         report_time_entries(entries)
     else:
         print(f'ERROR: Unsupported command "{command}"', file=sys.stderr)
+        print("       Use 'table' to generate a table of times per day.")
+        print("       Use 'tasks' to show a list of tasks.")
 
 
 def report_timecards(entries: list[TimeEntry]):

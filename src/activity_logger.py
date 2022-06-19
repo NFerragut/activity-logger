@@ -51,8 +51,7 @@ def main():
     checker = TaskChecker(change_on_title=config[_CHANGE_ON_TITLE],
                           inactive_seconds=config[_INACTIVE_SECONDS])
     if len(sys.argv) > 1:
-        filename = checker.get_log_filename(config[_LOG_FOLDER])
-        analyze.analyze(sys.argv[1], filename, config[_TASK_TYPES])
+        analyze.analyze(sys.argv[1], config[_LOG_FOLDER], config[_TASK_TYPES])
         sys.exit(0)
     start_log_message = checker.prepare_logging(config[_LOG_FOLDER])
     print(start_log_message)
