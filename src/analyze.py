@@ -35,7 +35,8 @@ def get_log_filename(log_folder: str):
     """Show a list of log files and wait for the user to select one."""
     logfiles: dict = _get_logs(log_folder)
     filename = _select_log_file(logfiles, how_many=5)
-    return filename
+    filepath = os.path.join(log_folder, filename)
+    return filepath
 
 
 def _get_logs(log_folder: str) -> dict:
