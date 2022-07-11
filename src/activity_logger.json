@@ -17,6 +17,31 @@
       "action": "collapse"
     },
     {
+      "name": "Non-Project Activity",
+      "regex": "^Planisware",
+      "action": "sequential"
+    },
+    {
+      "name": "Non-Project Activity",
+      "regex": "Whirlpool Corporation Mail",
+      "action": "sequential"
+    },
+    {
+      "name": "Non-Project Activity",
+      "regex": "Whirlpool Corporation - Calendar",
+      "action": "sequential"
+    },
+    {
+      "name": "Non-Project Activity",
+      "regex": "Google Drive",
+      "action": "sequential"
+    },
+    {
+      "name": "Non-Project Activity",
+      "regex": "KanbanFlow",
+      "action": "sequential"
+    },
+    {
       "name": "(Lunch)",
       "regex": "IDLE",
       "after": 1125,
