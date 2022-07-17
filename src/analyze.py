@@ -29,6 +29,8 @@ def analyze(command: str, log_folder: str, task_types: dict):
         identify_record(record, task_types)
     entries = group_records(records)
     report(command, entries)
+    print("Press any key to close ", end='', flush=True)
+    msvcrt.getch()
 
 
 def get_log_filename(log_folder: str):
