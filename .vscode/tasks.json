@@ -4,6 +4,24 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Build ActivityTracker",
+      "type": "shell",
+      "command": "PyInstaller",
+      "args": [
+        "-F",
+        "--specpath",
+        "src",
+        "-n",
+        "ActivityTracker",
+        "src/tracker/tracker.py"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
       "label": "deploy",
       "type": "shell",
       "command": "PyInstaller",
@@ -18,7 +36,7 @@
       "problemMatcher": [],
       "group": {
         "kind": "build",
-        "isDefault": true
+        "isDefault": false
       }
     }
   ]

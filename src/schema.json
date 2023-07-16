@@ -1,0 +1,109 @@
+{
+  "$id": "file:schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Configuration",
+  "description": "Configuration for analyzing a user activity log",
+  "type": "object",
+  "required": [
+    "steps"
+  ],
+  "properties": {
+    "projects": {
+      "description": "A mapping of short project names to project names that are used by the hour log system",
+      "type": "array",
+      "items": {
+        "type": [
+          "object"
+        ],
+        "required": [
+          "name",
+          "long_name"
+        ],
+        "properties": {
+          "name": {
+            "description": "Project name (short version)",
+            "type": "string"
+          },
+          "long_name": {
+            "description": "Project name as shown in the hour log system",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "steps": {
+      "description": "An ordered list of steps followed during the analysis",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "activity",
+          "first",
+          "last"
+        ],
+        "properties": {
+          "activity": {
+            "description": "The project to which the work should be applied",
+            "type": "string"
+          },
+          "first": {
+            "description": "Criteria for the first record in an activity",
+            "type": "object",
+            "properties": {
+              "active": {
+                "description": "Expected value for the user state",
+                "type": "boolean"
+              },
+              "started_at": {
+                "description": "Expected time of day for the record's start time",
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "description": "Earliest time of day that the record started (HH:MM)",
+                    "type": "string",
+                    "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                  },
+                  "max": {
+                    "description": "Latest time of day that the record started (HH:MM)",
+                    "type": "string",
+                    "pattern": "^(([01]\\d|2[0123]):[0-5]\\d|24:00)$"
+                  }
+                }
+              },
+              "once_per_day": {
+                "description": "Activity can only occur once per day when true",
+                "type": "boolean"
+              }
+            }
+          },
+          "last": {
+            "description": "Criteria for the last record in an activity",
+            "type": "object",
+            "properties": {
+              "active": {
+                "description": "Expected value for the user state of every record in the activity",
+                "type": "boolean"
+              },
+              "duration": {
+                "description": "Criteria for the activity duration",
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "description": "Shortest acceptable duration for the activity (HH:MM)",
+                    "type": "string",
+                    "pattern": "^(([01]\\d|2[0123]):[0-5]\\d|24:00)$"
+                  },
+                  "max": {
+                    "description": "Longest acceptable duration for the activity (HH:MM)",
+                    "type": "string",
+                    "pattern": "^(([01]\\d|2[0123]):[0-5]\\d|24:00)$"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
