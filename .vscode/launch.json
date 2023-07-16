@@ -5,26 +5,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "ActivityLogger evaluate",
+      "name": "Analyze evaluate",
       "type": "python",
       "request": "launch",
-      "program": "src/activity_logger.py",
+      "program": "src/analyze.py",
       "console": "integratedTerminal",
       "justMyCode": true,
       "args": [
-        "table"
+        "--config",
+        "src/analysis.json",
+        "data/nelson-2023-01-09.tab"
       ]
-    },
-    {
-      "name": "Debug activity_logger",
-      "type": "python",
-      "request": "launch",
-      "program": "src/activity_logger.py",
-      "purpose": [
-        "debug-in-terminal"
-      ],
-      "console": "integratedTerminal",
-      "justMyCode": true
     }
   ]
 }

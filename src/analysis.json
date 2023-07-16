@@ -1,0 +1,65 @@
+{
+  "$schema": "schema.json",
+  "projects": [
+    {
+      "name": "Android",
+      "long_name": "100258 - EES Android HMI & SW Architecture"
+    },
+    {
+      "name": "Nucleus",
+      "long_name": "103549 - EES Nucleus AO"
+    },
+    {
+      "name": "Training",
+      "long_name": "Education and Training"
+    },
+    {
+      "name": "Medical",
+      "long_name": "Illness / Medical Leave"
+    },
+    {
+      "name": "Non-Project",
+      "long_name": "Non-Project Meetings / Activities"
+    },
+    {
+      "name": "Talent",
+      "long_name": "Talent Management (Organization Development)"
+    }
+  ],
+  "steps": [
+    {
+      "activity": "Lunch",
+      "first": {
+        "active": false,
+        "started_at": {
+          "min": "11:15",
+          "max": "13:00"
+        },
+        "once_per_day": true
+      },
+      "last": {
+        "active": false,
+        "duration": {
+          "min": "00:15",
+          "max": "02:30"
+        }
+      }
+    },
+    {
+      "activity": "Non-Project",
+      "first": {
+        "active": true,
+        "title": "Planisware",
+        "app": "chrome.exe"
+      },
+      "last": {
+        "match": [
+          "active",
+          "title",
+          "app"
+        ],
+        "minutes_max": 15
+      }
+    }
+  ]
+}

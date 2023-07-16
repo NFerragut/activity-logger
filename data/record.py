@@ -1,6 +1,7 @@
 """Record data object -- data for a single line in the activity log."""
 
 from datetime import datetime, timedelta
+from pathlib import PurePath
 
 _DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 _ACTIVE = 'active'
@@ -59,6 +60,28 @@ class Record():
         """Get a string with the raw input values and no processed data"""
         start, active, hwnd = self._format_raw()
         return f'{start}\t{active}\t{hwnd}\t{self.title}\t{self.app}'
+
+    @staticmethod
+    def from_old_string(string:str):
+        """Generate a new record from a old string format"""
+        try:
+            start, _, title, app, hwnd = string.strip('\r\n').split('\t')
+            if title == 'Title':
+                record = Record(title=HEADER_TEXT)
+                record.start = datetime.strptime(start, _DATETIME_FORMAT)
+                return record
+            if title == 'IDLE':
+                record = Record()
+                record.start = datetime.strptime(start, _DATETIME_FORMAT)
+                return record
+            active = True
+            hwnd = _INVALID_HANDLE if hwnd in ('0', '') else int(hwnd)
+            app = PurePath(app).name.lower()
+            record = Record(active, hwnd, title, app)
+            record.start = datetime.strptime(start, _DATETIME_FORMAT)
+            return record
+        except ValueError:
+            return None
 
     @staticmethod
     def from_string(string:str):
