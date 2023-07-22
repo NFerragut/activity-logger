@@ -88,13 +88,13 @@
       "first": {
         "active": false,
         "started_at": {
-          "max": "04:15"
+          "max": "17:00"
         }
       },
       "last": {
         "continuous": true,
         "duration": {
-          "max": "01:15"
+          "max": "02:00"
         }
       }
     },
@@ -104,7 +104,7 @@
       "first": {
         "active": false,
         "started_at": {
-          "min": "04:15"
+          "min": "17:00"
         }
       },
       "last": {

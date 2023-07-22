@@ -15,7 +15,7 @@ class Project():
         self.name:str = project['name']
         self.long_name:str = project['long_name']
         self.working:bool = project['working']
-        self._seconds:list = [0.0] * _NUM_OF_DAYS
+        self.seconds:list = [0.0] * _NUM_OF_DAYS
         self._total:float = 0.0
 
     @property
@@ -36,27 +36,20 @@ class Project():
 
     def add_record(self, record:Record):
         """Add the time for a record to this project"""
-        self._seconds[record.weekday] += record.seconds
+        self.seconds[record.weekday] += record.seconds
         self._total += record.seconds
 
     def clear_seconds(self):
         """Reset the time associated with this project"""
-        self._seconds = [0.0] * _NUM_OF_DAYS
+        self.seconds = [0.0] * _NUM_OF_DAYS
         self._total = 0.0
 
-    def distribute_seconds(self, seconds:float):
-        """Distribute seconds across the days of a project"""
-        ratio:list[float]
-        if self._total:
-            ratio = [sec / self._total for sec in self._seconds]
-        else:
-            #        Mon  Tue  Wed  Thu  Fri  Sat  Sun
-            ratio = [0.2, 0.2, 0.2, 0.2, 0.2, 0.0, 0.0]
-        for weekday in range(_NUM_OF_DAYS):
-            if ratio[weekday]:
-                self._seconds[weekday] += ratio[weekday] * seconds
-        self._total += seconds
+    def distribute_seconds(self, src:'Project', ratio:float):
+        """Distribute a percentage of all seconds from the src Project."""
+        seconds = [ratio * sec for sec in src.seconds]
+        self.seconds = [sum(secs) for secs in zip(self.seconds, seconds)]
+        self._total += sum(seconds)
 
     def _get_weekday_hours(self, weekday:int) -> float:
         """Get the number of hours for the given weekday"""
-        return round(self._seconds[weekday] / _SECONDS_PER_HOUR, 1)
+        return round(self.seconds[weekday] / _SECONDS_PER_HOUR, 1)

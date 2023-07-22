@@ -124,10 +124,10 @@ def _distribute_times(projects:list[Project]):
         dst_sum = sum(prj.total_seconds for prj in dst_projects)
         if dst_sum:
             for dst in dst_projects:
-                dst.distribute_seconds(src.total_seconds * dst.total_seconds / dst_sum)
+                dst.distribute_seconds(src, dst.total_seconds / dst_sum)
         else:
             for dst in dst_projects:
-                dst.distribute_seconds(src.total_seconds / len(dst_projects))
+                dst.distribute_seconds(src, 1 / len(dst_projects))
         distributed_seconds += src.total_seconds
 
 def _read_config(configfile:str) -> dict:
