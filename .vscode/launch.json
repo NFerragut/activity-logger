@@ -14,7 +14,7 @@
       "args": [
         "--config",
         "src/analysis.json",
-        "data/nelson-2023-01-09.tab"
+        "data/nelson-2023-07-17.tab"
       ]
     }
   ]
