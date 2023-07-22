@@ -1,14 +1,14 @@
 """Record data object -- data for a single line in the activity log."""
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, time, timedelta
 
 _DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 _ACTIVE = 'active'
+_HEADER_TEXT = 'Time\tUser_Active\tWindow_Handle\tTitle\tApplication'
 _INACTIVE = 'inactive'
 _NO_HWND = '--------'
 _INVALID_HANDLE = -1
 
-HEADER_TEXT = 'Time\tUser_Active\tWindow_Handle\tTitle\tApplication'
 
 class Record():
     """A record found in the activity log."""
@@ -36,6 +36,16 @@ class Record():
             return _INACTIVE
 
     @property
+    def date(self) -> date:
+        """Get the calendar day that the record started"""
+        return self.start.date()
+
+    @staticmethod
+    def header_text() -> str:
+        """Get the text to use as a header for the record report"""
+        return _HEADER_TEXT
+
+    @property
     def hwnd_is_valid(self):
         """Returns True if the activity's window handle is valid"""
         return self.hwnd != _INVALID_HANDLE
@@ -51,9 +61,17 @@ class Record():
         self.seconds = (value - self.start).total_seconds()
 
     @property
-    def time_of_day(self):
+    def time_of_day(self) -> time:
         """Get the time of day that the record started"""
         return self.start.time()
+
+    @property
+    def weekday(self) -> int:
+        """Get the index for the weekday that the record started
+
+        0 (Monday) through 6 (Sunday)
+        """
+        return self.start.date().weekday()
 
     def raw_text(self) -> str:
         """Get a string with the raw input values and no processed data"""

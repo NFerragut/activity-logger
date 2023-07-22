@@ -38,18 +38,20 @@ class LogFile():
                 if record:
                     records.append(record)
                     if prev_rec:
-                        prev_rec.stop = record.start
+                        if prev_rec.date == record.date:
+                            prev_rec.stop = record.start
+                        else:
+                            prev_rec.seconds = 0
                     prev_rec = record
         return records
 
     @staticmethod
-    def select(folder:str, how_many:int=3) -> str:
+    def select(folder:str, *, selected:int=None, how_many:int=3) -> str:
         """Prompt the user to select a recent log file from a list"""
         logfiles = _find_all_logfiles(folder)
         if not logfiles:
             return ''
         weeks = _get_recent_weeks(logfiles, how_many)
-        selected = None
         while selected not in weeks:
             selected = _get_selected_week(weeks)
         return logfiles[selected]
