@@ -6,7 +6,7 @@ An application to track and report user activity.
 
 Run `TrackActivity.exe` to track your Windows activity. It will append your Windows activity to a weekly log file. The log file is a tab-delimited text file.
 
-### Commmand Line Options
+### Track CLI Options
 
 You can use command line options to specify the following items:
 
@@ -20,7 +20,7 @@ You can use command line options to specify the following items:
 
 Run `ReportActivity.exe` to report your weekly Windows activity. It will analyze a weekly log file.
 
-### Commmand Line Options
+### Report CLI Options
 
 You can use command line options to specify the following items:
 
