@@ -17,7 +17,8 @@
         ],
         "required": [
           "name",
-          "long_name"
+          "long_name",
+          "working"
         ],
         "properties": {
           "name": {
@@ -27,6 +28,17 @@
           "long_name": {
             "description": "Project name as shown in the hour log system",
             "type": "string"
+          },
+          "working": {
+            "description": "Tag time as working or non-working time",
+            "type": "boolean"
+          },
+          "distribute": {
+            "description": "List of other projects that should account for these hours",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }
@@ -54,6 +66,20 @@
                 "description": "Expected value for the user state",
                 "type": "boolean"
               },
+              "app": {
+                "description": "Expected application name as a case-insensitive regular expression",
+                "type": "string"
+              },
+              "title": {
+                "description": "Expected window title as one or more regular expressions",
+                "type": [
+                  "string",
+                  "array"
+                ],
+                "items": {
+                  "type": "string"
+                }
+              },
               "started_at": {
                 "description": "Expected time of day for the record's start time",
                 "type": "object",
@@ -70,9 +96,12 @@
                   }
                 }
               },
-              "once_per_day": {
-                "description": "Activity can only occur once per day when true",
-                "type": "boolean"
+              "tagged": {
+                "description": "label = All activity records must already be tagged with the given label\ntrue = All activity records must already be tagged as part of another activity",
+                "type": [
+                  "boolean",
+                  "string"
+                ]
               }
             }
           },
@@ -80,9 +109,46 @@
             "description": "Criteria for the last record in an activity",
             "type": "object",
             "properties": {
+              "continuous": {
+                "description": "Set to 'true' to use the first criteria (active, app, and/or title) to find the last record.\nSet to an array to use a specific subset of the first criteria (active, app, and/or title) to find the last record",
+                "type": [
+                  "boolean",
+                  "array"
+                ],
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "active",
+                    "app",
+                    "title",
+                    "tagged"
+                  ]
+                }
+              },
+              "intermittent": {
+                "description": "Allow other types of records between first and last record",
+                "type": "string",
+                "enum": [
+                  "exact_title"
+                ]
+              },
               "active": {
                 "description": "Expected value for the user state of every record in the activity",
                 "type": "boolean"
+              },
+              "app": {
+                "description": "Expected application name as a regular expression",
+                "type": "string"
+              },
+              "title": {
+                "description": "Expected window title as one or more regular expressions",
+                "type": [
+                  "string",
+                  "array"
+                ],
+                "items": {
+                  "type": "string"
+                }
               },
               "duration": {
                 "description": "Criteria for the activity duration",
@@ -99,8 +165,23 @@
                     "pattern": "^(([01]\\d|2[0123]):[0-5]\\d|24:00)$"
                   }
                 }
+              },
+              "tagged": {
+                "description": "label = All activity records must already be tagged with the given label\ntrue = All activity records must already be tagged as part of another activity",
+                "type": [
+                  "boolean",
+                  "string"
+                ]
               }
             }
+          },
+          "one_per_day": {
+            "description": "Activity can only occur once per day when true",
+            "type": "string",
+            "enum": [
+              "shortest",
+              "longest"
+            ]
           }
         }
       }

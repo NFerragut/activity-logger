@@ -9,7 +9,7 @@ import time
 
 from logfile import LogFile
 from windows_activity import WindowsActivity
-from record import Record, HEADER_TEXT
+from record import Record
 
 _INACTIVE_AFTER_SECONDS = 7.0 * 60
 _LOG_FOLDER = '.'
@@ -24,17 +24,18 @@ def parse_arguments():
                         help='Folder path for log files')
     parser.add_argument('-i', '--inactive',
                         type=int, default=_INACTIVE_AFTER_SECONDS,
-                        help='User inactive after specified seconds')
+                        help='User inactive after specified seconds (default=7 x 60)')
     parser.add_argument('-s', '--sample',
                         type=float, default=_SECONDS_BETWEEN_CHECKS,
-                        help='Seconds between checking for user activity')
+                        help='User activity check period (default=2.0s)')
     return parser.parse_args()
 
 def main():
     """Run a periodic loop to monitor the user's activity"""
     args = parse_arguments()
     LogFile.prepare(args.folder)
-    info('\n%s', HEADER_TEXT)
+    print(Record.header_text())
+    info('\n%s', Record.header_text())
 
     user_activity = Record()
     winact = WindowsActivity()
@@ -46,23 +47,27 @@ def main():
 
 def _check_user_activity(user_activity:Record, winact:WindowsActivity, inactive:int):
     # Check for any new user activity
-    current = _get_current_record(winact, inactive)
+    # pylint: disable=bare-except
+    try:
+        current = _get_current_record(winact, inactive)
 
-    active_changed = user_activity.active != current.active
-    if active_changed:
-        print(current.active_state)
-        if not current.active:
-            start = current.start
-            start -= timedelta(seconds=inactive)
-            current.start = start
+        active_changed = user_activity.active != current.active
+        if active_changed:
+            print(current.active_state)
+            if not current.active:
+                start = current.start
+                start -= timedelta(seconds=inactive)
+                current.start = start
 
-    window_changed = (user_activity.hwnd != current.hwnd or
-                        user_activity.title != current.title or
-                        user_activity.app != current.app)
-    if active_changed or window_changed:
-        print(current.raw_text())
-        info(current.raw_text())
-        return current
+        window_changed = (user_activity.hwnd != current.hwnd or
+                            user_activity.title != current.title or
+                            user_activity.app != current.app)
+        if active_changed or window_changed:
+            print(current.raw_text())
+            info(current.raw_text())
+            return current
+    except:
+        pass
     return user_activity
 
 def _quit_on_key():

@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build ActivityTracker",
+      "label": "Build TrackActivity",
       "type": "shell",
       "command": "PyInstaller",
       "args": [
@@ -12,8 +12,8 @@
         "--specpath",
         "src",
         "-n",
-        "ActivityTracker",
-        "src/tracker/tracker.py"
+        "TrackActivity",
+        "src/track.py"
       ],
       "problemMatcher": [],
       "group": {
@@ -22,7 +22,7 @@
       }
     },
     {
-      "label": "deploy",
+      "label": "Build ReportActivity",
       "type": "shell",
       "command": "PyInstaller",
       "args": [
@@ -30,13 +30,12 @@
         "--specpath",
         "src",
         "-n",
-        "ActivityLogger",
-        "src/activity_logger.py"
+        "ReportActivity",
+        "src/analyze.py"
       ],
       "problemMatcher": [],
       "group": {
         "kind": "build",
-        "isDefault": false
       }
     }
   ]

@@ -2,63 +2,253 @@
   "$schema": "schema.json",
   "projects": [
     {
-      "name": "Android",
-      "long_name": "100258 - EES Android HMI & SW Architecture"
+      "name": "TechStack",
+      "long_name": "100258 - EES Android HMI & SW Architecture",
+      "working": true
     },
     {
       "name": "Nucleus",
-      "long_name": "103549 - EES Nucleus AO"
+      "long_name": "103549 - EES Nucleus AO",
+      "working": true
+    },
+    {
+      "name": "Cooking",
+      "long_name": "116128 - I300 EMEA ACT (Assisted Cooking with Temperature) PDP",
+      "working": true
     },
     {
       "name": "Training",
-      "long_name": "Education and Training"
-    },
-    {
-      "name": "Medical",
-      "long_name": "Illness / Medical Leave"
+      "long_name": "Education and Training",
+      "working": true
     },
     {
       "name": "Non-Project",
-      "long_name": "Non-Project Meetings / Activities"
+      "long_name": "Non-Project Meetings / Activities",
+      "working": true
     },
     {
       "name": "Talent",
-      "long_name": "Talent Management (Organization Development)"
+      "long_name": "Talent (Organization Development)",
+      "working": true
+    },
+    {
+      "name": "Distributed",
+      "long_name": "Unidentified Work (Desk Work)",
+      "working": true,
+      "distribute": [
+        "TechStack",
+        "Nucleus",
+        "Cooking"
+      ]
+    },
+    {
+      "name": "Lunch",
+      "long_name": "Lunch (Daily Mid-Day Break)",
+      "working": false
+    },
+    {
+      "name": "AFK",
+      "long_name": "Unidentified Work (Away From Desk)",
+      "working": true,
+      "distribute": [
+        "TechStack",
+        "Nucleus",
+        "Cooking"
+      ]
+    },
+    {
+      "name": "Idle",
+      "long_name": "Non-Working Idle Time (After Work)",
+      "working": false
     }
   ],
   "steps": [
     {
+      "description": "Daily lunch time (if any) based on inactivity",
       "activity": "Lunch",
       "first": {
         "active": false,
         "started_at": {
           "min": "11:15",
           "max": "13:00"
-        },
-        "once_per_day": true
+        }
       },
       "last": {
-        "active": false,
+        "continuous": true,
         "duration": {
           "min": "00:15",
           "max": "02:30"
         }
+      },
+      "one_per_day": "longest"
+    },
+    {
+      "description": "Away from the keyboard (office hours)",
+      "activity": "AFK",
+      "first": {
+        "active": false,
+        "started_at": {
+          "max": "04:15"
+        }
+      },
+      "last": {
+        "continuous": true,
+        "duration": {
+          "max": "01:15"
+        }
       }
     },
     {
+      "description": "Away from the keyboard (after hours)",
+      "activity": "Idle",
+      "first": {
+        "active": false,
+        "started_at": {
+          "min": "04:15"
+        }
+      },
+      "last": {
+        "continuous": true
+      }
+    },
+
+    {
+      "description": "Nucleus Meetings",
+      "activity": "Nucleus",
+      "first": {
+        "active": true,
+        "app": "chrome",
+        "title": [
+          "Meet - .*?(API for Exp|CCB Weekly|GESE|Interpreter|Nucleus|RTC to GitHub|Supervisor)",
+          "Meet - 1:1 (Alessandro|Gabriele|Hanumanth|Priyanka|Sachin|Tushar|Umesh)"
+        ]
+      },
+      "last": {
+        "intermittent": "exact_title",
+        "duration": {
+          "max": "02:00"
+        }
+      }
+    },
+    {
+      "description": "Tech stack meetings",
+      "activity": "TechStack",
+      "first": {
+        "active": true,
+        "app": "chrome",
+        "title": "Meet - .*?(Core1|Tech\\s*Stack|ZCore|Zephyr)"
+      },
+      "last": {
+        "intermittent": "exact_title",
+        "duration": {
+          "max": "02:00"
+        }
+      }
+    },
+
+    {
+      "description": "Cooking work",
+      "activity": "Cooking",
+      "first": {
+        "active": true,
+        "title": [
+          "(Cooking|FSR|i300|Induction|Microwave|Oven)",
+          "(Carlo|Patrick|Yoga)"
+        ]
+      },
+      "last": {
+        "continuous": true
+      }
+    },
+    {
+      "description": "Nucleus work",
+      "activity": "Nucleus",
+      "first": {
+        "active": true,
+        "title": [
+          "(API for Exp|API\\d\\d\\d|Citrix|GESE|IAR Systems|Interpreter|Nucleus|RTC to GitHub|Supervisor)",
+          "Edit Project Area - Administration - Engineering Workflow Management",
+          "Change and Configuration Management",
+          "(Alessandro|Gabriele|Hanumanth|Jonatas N Grandini|Lorenzo M|Reid|Ryan P Kujawski|Paul F Spindler|Priyanka|Sachin|Tushar|Umesh)"
+        ]
+      },
+      "last": {
+        "continuous": true
+      }
+    },
+    {
+      "description": "Tech Stack work",
+      "activity": "TechStack",
+      "first": {
+        "active": true,
+        "title": [
+          "(BLL|Business Logic Layer|Connected HMI|Core ?\\d|ESP32|ESP.IDF|Espressif|idf_monitor|Linux|OS Comparison|OS Layer|\\bOTA\\b|riscv|RT1[01]60|Tech ?Stack|TS3|Ubuntu|VirtualBox|West|WSL|ZCore|Zephyr|zp)",
+          "Core Assets & Camera",
+          "(Eduardo|Rodrigo|Shekhar|Steven|Taesub|Vijay Patel)"
+        ]
+      },
+      "last": {
+        "continuous": true
+      }
+    },
+    {
+      "description": "Tech Stack work",
+      "activity": "TechStack",
+      "first": {
+        "active": true,
+        "app": "virtualbox"
+      },
+      "last": {
+        "continuous": true
+      }
+    },
+
+    {
+      "description": "People Leader work",
+      "activity": "Talent",
+      "first": {
+        "active": true,
+        "title": "(Career|EPE|Performance Feedback|IDP|Interview|Job|PMP|Skills|SuccessFactors)"
+      },
+      "last": {
+        "continuous": true
+      }
+    },
+
+    {
+      "description": "Training (given and received)",
+      "activity": "Training",
+      "first": {
+        "active": true,
+        "title": "(Skill Plan|university|WeLEARN)"
+      },
+      "last": {
+        "continuous": true
+      }
+    },
+
+    {
+      "description": "Task-switching work",
       "activity": "Non-Project",
       "first": {
         "active": true,
-        "title": "Planisware",
-        "app": "chrome.exe"
+        "title": [
+          "(BigFix Support|Ethics|Glint|GlobalProtect|Login|Planisware|sign in)"
+        ]
       },
       "last": {
-        "match": [
-          "active",
-          "title",
-          "app"
-        ],
-        "minutes_max": 15
+        "continuous": true
+      }
+    },
+
+    {
+      "description": "Untracked records",
+      "activity": "Distributed",
+      "first": {
+        "active": true
+      },
+      "last": {
+        "continuous": true
       }
     }
   ]
