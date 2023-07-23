@@ -86,7 +86,8 @@ def main():
                for prj in projects.values()
                if prj.working and not prj.distribute and prj.total_hours]
     Report.print_time_card(working, 'Projects', records[0].start)
-    print()
+
+    input('\nPress ENTER to quit\n')
 
 def _analyze_records(records:list[Record], cfg:dict):
     step = Step()
