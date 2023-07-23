@@ -46,12 +46,14 @@ class LogFile():
         return records
 
     @staticmethod
-    def select(folder:str, *, selected:int=None, how_many:int=3) -> str:
+    def select(folder:str, *, selected:int=None, how_many:int=5) -> str:
         """Prompt the user to select a recent log file from a list"""
         logfiles = _find_all_logfiles(folder)
         if not logfiles:
             return ''
         weeks = _get_recent_weeks(logfiles, how_many)
+        if 0 < selected <= len(weeks):
+            selected = weeks[selected - 1]
         while selected not in weeks:
             selected = _get_selected_week(weeks)
         return logfiles[selected]
